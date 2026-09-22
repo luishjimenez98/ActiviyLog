@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { login } from './controllers/authController.js';
-import { verifyToken } from './middlewares/authmiddleware.js'
+import { login, createUser } from './controllers/authController.js';
+import { verifyToken, verifyAdmin } from './middlewares/authmiddleware.js';
 
 const app = express();
 
@@ -17,6 +17,9 @@ app.post('/auth/login', login);
 app.get('/auth/me', verifyToken, (req, res) => {
   res.json({ user: req.user });
 });
+
+// Ruta exclusiva de Administrador para crear usuarios
+app.post('/admin/users', verifyAdmin, createUser);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
