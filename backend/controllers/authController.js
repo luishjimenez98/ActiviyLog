@@ -1,0 +1,57 @@
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { pool } from '../config/db.js';
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email y contraseña son obligatorios.' });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT Id_personal, Nombre, Apellido_paterno, Admin, Email, Constrasena FROM personal WHERE Email = ?',
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Credenciales incorrectas.' });
+    }
+
+    const usuario = rows[0];
+
+    const passwordValida = await bcrypt.compare(password, usuario.Constrasena);
+    if (!passwordValida) {
+      return res.status(401).json({ error: 'Credenciales incorrectas.' });
+    }
+
+    // Separar la contraseña del resto de los datos
+    const { Constrasena, ...usuarioPayload } = usuario;
+
+    // AQUÍ VA EL BLOQUE:
+    const isAdmin = Boolean(usuario.Admin);
+
+    const token = jwt.sign(
+      { 
+        id: usuario.Id_personal, 
+        email: usuario.Email, 
+        admin: isAdmin 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '62h' }
+    );
+
+    return res.json({
+      user: {
+        ...usuarioPayload,
+        Admin: isAdmin
+      },
+      token
+    });
+
+  } catch (error) {
+    console.error('Error en Login:', error);
+    return res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+};
