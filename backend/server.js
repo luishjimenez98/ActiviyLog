@@ -1,8 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { login, createUser } from './controllers/authController.js';
-import { verifyToken, verifyAdmin } from './middlewares/authmiddleware.js';
+import authRoutes from './routes/authRoutes.js';
+import personalRoutes from './routes/personalRoutes.js';
+import proyectsRoutes from './routes/proyectRoutes.js';
+
+dotenv.config();
+
+if (!process.env.JWT_SECRET) {
+  console.error('ERROR CRÍTICO: Falta definir JWT_SECRET en el archivo .env');
+  process.exit(1);
+}
+
 
 const app = express();
 
@@ -10,18 +19,17 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/health', (req, res) => res.json({ status: 'ONLINE' }));
-app.post('/auth/login', login);
 
+app.use('/auth', authRoutes);
+app.use('/admin', personalRoutes);
+app.use('/admin', proyectsRoutes);
 
-// Retorna los datos del usuario autenticado según su token
-app.get('/auth/me', verifyToken, (req, res) => {
-  res.json({ user: req.user });
-});
-
-// Ruta exclusiva de Administrador para crear usuarios
-app.post('/admin/users', verifyAdmin, createUser);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Backend corriendo en http://localhost:${PORT}`);
 });
+
+
+
+
