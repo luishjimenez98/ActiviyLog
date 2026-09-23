@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import personalRoutes from './routes/personalRoutes.js';
-import proyectsRoutes from './routes/proyectRoutes.js';
+import projectsRoutes from './routes/projectRoutes.js';
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ app.get('/health', (req, res) => res.json({ status: 'ONLINE' }));
 
 app.use('/auth', authRoutes);
 app.use('/admin', personalRoutes);
-app.use('/admin', proyectsRoutes);
+app.use('/admin', projectsRoutes);
 
 
 const PORT = process.env.PORT || 3001;

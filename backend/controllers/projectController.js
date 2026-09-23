@@ -1,6 +1,6 @@
 import { pool } from '../config/db.js';
 
-export const createProyect = async(req, res) =>{
+export const createProject = async(req, res) =>{
     const {nombre,estado,fecha,horas_asignadas,horas_aumentadas}=req.body;
 
     if (!nombre || !estado || !horas_asignadas) {
@@ -8,12 +8,12 @@ export const createProyect = async(req, res) =>{
     }
     try {
     // 1. Verificar si el nombre del proyecto ya existe
-    const [existingProyect] = await pool.query(
+    const [existingProject] = await pool.query(
       'SELECT Id_proyecto FROM proyectos WHERE nombre = ?',
       [nombre]
     );
 
-    if (existingProyect.length > 0) {
+    if (existingProject.length > 0) {
       return res.status(400).json({ error: 'El nombre del proyecto ya está registrado.' });
     }
 

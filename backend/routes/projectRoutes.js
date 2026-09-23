@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { createProyect } from '../controllers/proyectController.js';
+import { createProject } from '../controllers/projectController.js';
 import { verifyAdmin } from '../middlewares/authmiddleware.js';
 
 
 const router = Router()
 
-router.post('/proyectos',verifyAdmin,createProyect)
+router.post('/proyectos',verifyAdmin,createProject)
 
 
 export default router;
