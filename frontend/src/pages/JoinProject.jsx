@@ -13,7 +13,7 @@ export default function JoinProject() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Cargar el listado de proyectos para el combobox
+  // Cargar proyectos para el selector
   useEffect(() => {
     const fetchProyectos = async () => {
       try {
@@ -33,7 +33,7 @@ export default function JoinProject() {
     setSuccessMsg('');
 
     if (!selectedProject || !codigo) {
-      setError('Debes seleccionar un proyecto e ingresar el código de acceso.');
+      setError('Debes seleccionar un proyecto e ingresar la clave.');
       return;
     }
 
@@ -41,9 +41,9 @@ export default function JoinProject() {
 
     try {
       const res = await joinProjectService(selectedProject, codigo);
-      setSuccessMsg(res.message || 'Te has unido exitosamente.');
+      setSuccessMsg(res.message || 'Te has unido al proyecto exitosamente.');
       
-      // Redirigir al Dashboard después de 1.5 segundos
+      // Redirigir al Dashboard tras 1.5 segundos
       setTimeout(() => {
         navigate('/dashboard');
       }, 1500);
@@ -63,101 +63,129 @@ export default function JoinProject() {
   return (
     <div className="min-h-screen bg-white flex flex-col justify-start items-start w-full overflow-y-auto">
       
-      {/* Header oficial */}
-      <header className="w-full px-12 py-5 bg-white border-b border-gray-200 flex justify-between items-center">
-        <img 
-          className="w-[220px] h-[65px] object-contain cursor-pointer" 
-          src={logoImg} 
-          alt="itecor"
-          onClick={() => navigate('/dashboard')}
-        />
-        
-        <nav className="flex items-center gap-20 pr-4">
-          <button 
+      {/* Header unificado exacto al del Dashboard */}
+      <header className="w-full h-[139px] bg-white border-b border-gray-200 sticky top-0 z-50 flex items-center">
+        <div className="w-full px-[66px] flex justify-between items-center gap-12">
+          
+          {/* Logo */}
+          <img 
+            className="w-[235px] h-[72px] object-contain cursor-pointer shrink-0" 
+            src={logoImg} 
+            alt="itecor" 
             onClick={() => navigate('/dashboard')}
-            className="text-black text-2xl font-medium font-['Inter'] hover:text-orange-600 transition-colors"
-          >
-            Proyectos
-          </button>
-          <button className="text-orange-600 text-2xl font-medium font-['Inter']">
-            Unirse
-          </button>
-          <button 
-            onClick={handleLogout}
-            className="text-black text-2xl font-medium font-['Inter'] hover:text-red-600 transition-colors"
-          >
-            Cerrar sesión
-          </button>
-        </nav>
+          />
+          
+          {/* Menú de navegación repartido - "Unirse" activo en naranja */}
+          <nav className="flex-1 flex justify-evenly items-center max-w-[700px]">
+            <button 
+              onClick={() => navigate('/dashboard')}
+              className="px-6 py-2 text-[#2F3D47] hover:text-[#FF4500] text-2xl font-medium font-['Inter'] transition-colors hover:scale-105"
+            >
+              Proyectos
+            </button>
+            <button 
+              onClick={() => navigate('/join')}
+              className="px-6 py-2 text-[#FF4500] text-2xl font-medium font-['Inter'] transition-transform hover:scale-105"
+            >
+              Unirse
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="px-6 py-2 text-[#2F3D47] hover:text-red-600 text-2xl font-medium font-['Inter'] transition-colors hover:scale-105"
+            >
+              Cerrar sesión
+            </button>
+          </nav>
+
+        </div>
       </header>
 
       {/* Contenido Principal */}
-      <main className="w-full px-12 pt-10 pb-12 flex flex-col justify-start items-start gap-8">
+      <main className="w-full px-[66px] pb-12 flex flex-col justify-start items-start">
         
-        <h1 className="text-[#4A4A4A] text-4xl font-bold font-['Inter'] tracking-tight">
-          Unirse a un Proyecto
+        {/* Título alineado a los 66px de margen izquierdo */}
+        <h1 className="text-[#4A4A4A] text-4xl font-bold font-['Inter'] tracking-tight pt-[48px] pb-8">
+          Unirse a un proyecto
         </h1>
 
-        <form onSubmit={handleSubmit} className="w-[530px] flex flex-col gap-6">
-          
-          {/* Mensajes de Alerta */}
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-lg font-['Inter']">
-              {error}
+        {/* Tarjeta del Formulario centrada horizontalmente */}
+        <div className="w-full flex justify-center items-center">
+          <form 
+            onSubmit={handleSubmit}
+            className="p-8 bg-white rounded-2xl border border-neutral-300 flex flex-col justify-center items-center gap-6 shadow-sm"
+          >
+            {/* Mensajes de Alerta */}
+            {error && (
+              <div className="w-[660px] p-3.5 bg-red-50 border border-red-200 rounded-[20px] text-red-600 text-lg font-['Inter']">
+                {error}
+              </div>
+            )}
+
+            {successMsg && (
+              <div className="w-[660px] p-3.5 bg-green-50 border border-green-200 rounded-[20px] text-green-700 text-lg font-['Inter']">
+                {successMsg}
+              </div>
+            )}
+
+            {/* Campos del Formulario (Ancho 660px de tu mockup) */}
+            <div className="w-[660px] flex flex-col gap-4">
+              
+              {/* Select de Proyecto */}
+              <div className="flex flex-col gap-2">
+                <label className="text-black text-xl font-normal font-['Inter']">
+                  Proyecto
+                </label>
+                <div className="relative w-full">
+                  <select
+                    value={selectedProject}
+                    onChange={(e) => setSelectedProject(e.target.value)}
+                    className="w-full h-14 pl-4 pr-10 bg-slate-50 rounded-[20px] border border-slate-200 text-neutral-700 text-xl font-normal font-['Inter'] outline-none appearance-none cursor-pointer focus:border-slate-400 transition-colors"
+                  >
+                    <option value="" disabled className="text-neutral-400">
+                      Selecciona un proyecto
+                    </option>
+                    {proyectos.map((p) => (
+                      <option key={p.Id_proyecto} value={p.Id_proyecto}>
+                        {p.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Flecha personalizada del selector */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-400">
+                    ▼
+                  </div>
+                </div>
+              </div>
+
+              {/* Input de Clave */}
+              <div className="flex flex-col gap-2">
+                <label className="text-black text-xl font-normal font-['Inter']">
+                  Clave
+                </label>
+                <input
+                  type="text"
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value)}
+                  placeholder="Ej. 8456"
+                  className="w-full h-14 px-4 bg-slate-50 rounded-[20px] border border-slate-200 text-black placeholder-neutral-400 text-xl font-normal font-['Inter'] outline-none focus:border-slate-400 transition-colors"
+                />
+              </div>
+
             </div>
-          )}
 
-          {successMsg && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-lg font-['Inter']">
-              {successMsg}
+            {/* Botón Unirse (estilo cápsula naranja) */}
+            <div className="flex justify-center items-center pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-40 h-16 bg-[#FF4500] hover:bg-[#E03E00] active:scale-[0.98] rounded-[57px] text-white text-xl font-normal font-['Inter'] transition-all shadow-sm disabled:opacity-50"
+              >
+                {loading ? 'Uniendo...' : 'Unirse'}
+              </button>
             </div>
-          )}
 
-          {/* Combobox / Select de Proyectos */}
-          <div className="flex flex-col gap-2">
-            <label className="text-black text-2xl font-medium font-['Inter']">
-              Selecciona el Proyecto
-            </label>
-            <select
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full h-14 bg-slate-50 rounded-[20px] border border-slate-200 px-5 text-black text-lg outline-none focus:border-slate-400 transition-colors"
-            >
-              <option value="">-- Selecciona un proyecto --</option>
-              {proyectos.map((p) => (
-                <option key={p.Id_proyecto} value={p.Id_proyecto}>
-                  {p.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Input de Código de Acceso */}
-          <div className="flex flex-col gap-2">
-            <label className="text-black text-2xl font-medium font-['Inter']">
-              Código de Acceso
-            </label>
-            <input
-              type="text"
-              value={codigo}
-              onChange={(e) => setCodigo(e.target.value)}
-              placeholder="Ingresa el código"
-              className="w-full h-14 bg-slate-50 rounded-[20px] border border-slate-200 px-5 text-black text-lg outline-none focus:border-slate-400 transition-colors"
-            />
-          </div>
-
-          {/* Botón de Envío */}
-          <div className="flex justify-center mt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-[320px] py-3.5 bg-[#FF4500] hover:bg-[#E03E00] active:scale-[0.99] rounded-full transition-all text-white text-2xl font-semibold font-['Inter'] shadow-sm disabled:opacity-50"
-            >
-              {loading ? 'Procesando...' : 'Unirse al Proyecto'}
-            </button>
-          </div>
-
-        </form>
+          </form>
+        </div>
 
       </main>
 
