@@ -23,7 +23,8 @@ app.get('/health', (req, res) => res.json({ status: 'ONLINE' }));
 app.use('/auth', authRoutes);
 app.use('/admin', personalRoutes);
 app.use('/admin', projectsRoutes);
-
+app.use('/', projectsRoutes);
+app.use('/' , personalRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

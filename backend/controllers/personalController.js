@@ -1,5 +1,26 @@
 import { pool } from '../config/db.js';
 import bcrypt from 'bcryptjs';
+
+
+//Ver personal
+export const getPersonal = async (req, res) => {
+  try {
+    // 1.- Consulta para obtener los proyectos de la base de datos
+    const [personal] = await pool.query(
+      'SELECT Id_personal, Nombre, Apellido_paterno FROM personal'
+    );
+
+    return res.status(200).json({
+      personal
+    });
+
+  } catch (error) {
+    console.error('Error al buscar al personal', error);
+    return res.status(500).json({ error: 'Error interno al buscar en la base de datos.' });
+  }
+};
+
+
 // Crear un nuevo usuario (Solo Admin)
 export const createPersonal = async (req, res) => {
   const { Nombre, Apellido_paterno, Apellido_materno,Telefono,Admin,Email, Constrasena } = req.body;
