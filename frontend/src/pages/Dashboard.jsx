@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getMyProjects } from '../services/projectService';
 import logoImg from '../assets/logo.png';
+import { useNavigate } from 'react-router-dom';
 
+  
 export default function Dashboard() {
   const [proyectos, setProyectos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProyectos = async () => {
@@ -42,7 +45,10 @@ export default function Dashboard() {
           <button className="text-orange-600 text-2xl font-medium font-['Inter']">
             Proyectos
           </button>
-          <button className="text-black text-2xl font-medium font-['Inter'] hover:text-orange-600 transition-colors">
+          <button 
+            onClick={() => navigate('/join')}
+            className="text-black text-2xl font-medium font-['Inter'] hover:text-orange-600 transition-colors"
+          >
             Unirse
           </button>
           <button 
