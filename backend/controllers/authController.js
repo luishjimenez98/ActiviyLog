@@ -27,11 +27,11 @@ export const login = async (req, res) => {
     }
 
     // Separar la contraseña del resto de los datos
-    const { Constrasena, ...usuarioPayload } = usuario;
+    const { Contrasena: _, ...usuarioPayload } = usuario;
 
-    // AQUÍ VA EL BLOQUE:
+
     const isAdmin = Boolean(usuario.Admin);
-
+    // Firmamos el token
     const token = jwt.sign(
       { 
         id: usuario.Id_personal, 
