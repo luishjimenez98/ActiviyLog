@@ -126,3 +126,42 @@ export const joinProject = async (req, res) => {
     return res.status(500).json({ error: 'Error interno al registrar la unión en la base de datos.' });
   }
 };
+
+
+//Ver proyectos por personal
+export const getProjectPersonal = async (req, res) => {
+  try {
+    const id_personal = req.user?.id;
+    const nombre = req.user?.nombre;
+    if (!id_personal) {
+      return res.status(401).json({ error: 'Usuario no autenticado correctamente.' });
+    }
+
+    // Consulta para obtener los proyectos donde esta registrado el usuario
+    const [proyectos] = await pool.query(
+      `SELECT p.Id_proyecto, p.nombre, p.Id_estado, 
+              DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') AS fecha_inicio, 
+              p.horas_asignadas, p.horas_aumentadas 
+      FROM proyectos p
+      INNER JOIN personal_proyecto pp ON p.Id_proyecto = pp.Id_proyecto
+      WHERE pp.Id_personal = ?`,
+      [id_personal]
+    );
+
+    if (proyectos.length === 0) {
+      return res.status(200).json({ 
+        message: `Bienvenido ${id_personal}. \n No estás registrado en ningún proyecto.`,
+        proyectos: [] 
+      });
+    }
+
+    return res.status(200).json({
+      message: `Bienvenido ${nombre}. Tus proyectos:`,
+      proyectos
+    });
+
+  } catch (error) {
+    console.error('Error al buscar proyectos del personal:', error);
+    return res.status(500).json({ error: 'Error interno al buscar en la base de datos.' });
+  }
+};
