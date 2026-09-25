@@ -144,13 +144,16 @@ export const getProjectPersonal = async (req, res) => {
         p.nombre,
         p.horas_asignadas,
         p.horas_aumentadas,
-        pp.Id_participacion,
-        IFNULL(SUM(rh.Horas), 0) AS horas_registradas
-      FROM personal_proyecto pp
-      INNER JOIN proyectos p ON pp.Id_proyecto = p.Id_proyecto
-      LEFT JOIN registro_horas rh ON pp.Id_participacion = rh.Id_participacion
-      WHERE pp.Id_personal = ?
-      GROUP BY p.Id_proyecto, pp.Id_participacion`,
+        IFNULL(
+          (SELECT SUM(rh.Horas) 
+           FROM personal_proyecto pp_all
+           INNER JOIN registro_horas rh ON pp_all.Id_participacion = rh.Id_participacion
+           WHERE pp_all.Id_proyecto = p.Id_proyecto), 
+          0
+        ) AS horas_registradas
+      FROM personal_proyecto pp_user
+      INNER JOIN proyectos p ON pp_user.Id_proyecto = p.Id_proyecto
+      WHERE pp_user.Id_personal = ?`,
       [id_personal]
     );
 
