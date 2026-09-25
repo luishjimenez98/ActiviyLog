@@ -43,10 +43,10 @@ export default function JoinProject() {
       const res = await joinProjectService(selectedProject, codigo);
       setSuccessMsg(res.message || 'Te has unido al proyecto exitosamente.');
       
-      // Redirigir al Dashboard tras 1.5 segundos
+      // Redirigir al Dashboard
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1500);
+      }, 1000);
 
     } catch (err) {
       setError(err.message);
@@ -63,7 +63,6 @@ export default function JoinProject() {
   return (
     <div className="min-h-screen bg-white flex flex-col justify-start items-start w-full overflow-y-auto">
       
-      {/* Header unificado exacto al del Dashboard */}
       <header className="w-full h-[139px] bg-white border-b border-gray-200 sticky top-0 z-50 flex items-center">
         <div className="w-full px-[66px] flex justify-between items-center gap-12">
           
@@ -75,7 +74,7 @@ export default function JoinProject() {
             onClick={() => navigate('/dashboard')}
           />
           
-          {/* Menú de navegación repartido - "Unirse" activo en naranja */}
+          {/* Menú de navegación */}
           <nav className="flex-1 flex justify-evenly items-center max-w-[700px]">
             <button 
               onClick={() => navigate('/dashboard')}
@@ -103,12 +102,12 @@ export default function JoinProject() {
       {/* Contenido Principal */}
       <main className="w-full px-[66px] pb-12 flex flex-col justify-start items-start">
         
-        {/* Título alineado a los 66px de margen izquierdo */}
+        {/* Título */}
         <h1 className="text-[#4A4A4A] text-4xl font-bold font-['Inter'] tracking-tight pt-[48px] pb-8">
           Unirse a un proyecto
         </h1>
 
-        {/* Tarjeta del Formulario centrada horizontalmente */}
+        {/* Tarjeta del Formulario */}
         <div className="w-full flex justify-center items-center">
           <form 
             onSubmit={handleSubmit}
@@ -127,7 +126,7 @@ export default function JoinProject() {
               </div>
             )}
 
-            {/* Campos del Formulario (Ancho 660px de tu mockup) */}
+            {/* Campos del Formulario */}
             <div className="w-[660px] flex flex-col gap-4">
               
               {/* Select de Proyecto */}
@@ -173,7 +172,7 @@ export default function JoinProject() {
 
             </div>
 
-            {/* Botón Unirse (estilo cápsula naranja) */}
+            {/* Botón Unirse */}
             <div className="flex justify-center items-center pt-2">
               <button
                 type="submit"

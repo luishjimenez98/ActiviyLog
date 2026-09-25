@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { createProject } from '../controllers/projectController.js';
-import { verifyAdmin } from '../middlewares/authmiddleware.js';
-import { verifyToken } from '../middlewares/authmiddleware.js';
-import { getProject, joinProject, getProjectPersonal } from '../controllers/projectController.js';
+import { verifyAdmin, verifyToken } from '../middlewares/authmiddleware.js';
+import { createProject, getProject, joinProject, getProjectPersonal } from '../controllers/projectController.js';
 const router = Router()
 
 router.post('/proyectos',verifyAdmin,createProject);

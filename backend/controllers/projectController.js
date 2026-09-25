@@ -134,17 +134,23 @@ export const getProjectPersonal = async (req, res) => {
     const id_personal = req.user?.id;
     const nombre = req.user?.nombre;
     if (!id_personal) {
-      return res.status(401).json({ error: 'Usuario no autenticado correctamente.' });
+      return res.status(401).json({ error: 'Usuario no encontrado' });
     }
 
     // Consulta para obtener los proyectos donde esta registrado el usuario
     const [proyectos] = await pool.query(
-      `SELECT p.Id_proyecto, p.nombre, p.Id_estado, 
-              DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') AS fecha_inicio, 
-              p.horas_asignadas, p.horas_aumentadas 
-      FROM proyectos p
-      INNER JOIN personal_proyecto pp ON p.Id_proyecto = pp.Id_proyecto
-      WHERE pp.Id_personal = ?`,
+      `SELECT 
+        p.Id_proyecto,
+        p.nombre,
+        p.horas_asignadas,
+        p.horas_aumentadas,
+        pp.Id_participacion,
+        IFNULL(SUM(rh.Horas), 0) AS horas_registradas
+      FROM personal_proyecto pp
+      INNER JOIN proyectos p ON pp.Id_proyecto = p.Id_proyecto
+      LEFT JOIN registro_horas rh ON pp.Id_participacion = rh.Id_participacion
+      WHERE pp.Id_personal = ?
+      GROUP BY p.Id_proyecto, pp.Id_participacion`,
       [id_personal]
     );
 
@@ -156,7 +162,6 @@ export const getProjectPersonal = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: `Bienvenido ${nombre}. Tus proyectos:`,
       proyectos
     });
 

@@ -42,7 +42,7 @@ export const getAllProjects = async () => {
   return data;
 };
 
-// Unirse a un proyecto mediante ID y código de acceso
+// Unirse a un proyecto
 export const joinProjectService = async (id_proyecto, codigo) => {
   const token = localStorage.getItem('token');
 
@@ -59,6 +59,27 @@ export const joinProjectService = async (id_proyecto, codigo) => {
 
   if (!response.ok) {
     throw new Error(data.error || 'Error al intentar unirse al proyecto');
+  }
+
+  return data;
+};
+//Añadir horas
+export const ProjectHours = async (id_proyecto, horas) => {
+  const token = localStorage.getItem('token');
+
+  const response = await fetch(`${API_URL}/time`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ id_proyecto, horas })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Error al registrar las horas');
   }
 
   return data;

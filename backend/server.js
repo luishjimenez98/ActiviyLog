@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import personalRoutes from './routes/personalRoutes.js';
 import projectsRoutes from './routes/projectRoutes.js';
+import timeRoutes from './routes/timeRoutes.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/admin', personalRoutes);
 app.use('/admin', projectsRoutes);
 app.use('/', projectsRoutes);
 app.use('/' , personalRoutes);
+app.use('/', timeRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
